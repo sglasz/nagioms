@@ -18,25 +18,58 @@ echo "Print all configuration settings:"
 cat $CONFIG_FILE
 }
 
-function init_scripts {
-        n=0
-	while IFS= read -r line 
-	do      
-		if [[ $line != \#* ]] #lines don't beginn with comments
- 		then 
-			script_name=`echo $line | awk '{print $1}'`
-			script_recurrence=`echo $line | awk '{print $2}'`
-			script_command=`echo $line | awk '{for(i=3;i<=NF;i++){printf "%s ", $i};}'`
-			CoMa[$n,0]=$script_name
-			CoMa[$n,1]=$script_recurrence
-			CoMa[$n,2]=$script_command
-			((n++))
-		fi
-	done <"$command_file"	
+# CoMa [ check_name recurrence_time script_command_with_parameters process_pid timestamp ]
 
-
+let n=0
+declare -a CoMa
+function init_script {
+#let script_name script_recurrence script_command
+while IFS= read -r line 
+do      
+	if [[ $line != \#* ]] #lines don't beginn with comments
+	then
+echo -en "\n"
+	echo $n
+	 
+	echo $line | awk '{print $1}'
+	echo $line | awk '{print $2}'
+	echo $line | awk '{for(i=3;i<=NF;i++){printf "%s ", $i};}'
+	CoMa[$n,0]=`echo $line | awk '{print $1}'`
+	CoMa[$n,1]=`echo $line | awk '{print $2}'`
+	CoMa[$n,2]=`echo $line | awk '{for(i=3;i<=NF;i++){printf "%s ", $i};}'`
+	((n++))
+	#echo $n
+	fi
+done <"$command_file"
 }
 
+echo ${CoMa[0,0]}
+echo ${CoMa[1,0]}
+
+
+function run_script {
+	for ((i=0; i<n; i++))
+	do
+		for ((j=0; j<3; j++))
+   		do
+      		echo -ne "${CoMa[${i},${j}]}\t"
+		echo -ne "\n" 	
+		done
+	
+	done
+
+}
+init_script
+#run_script
+#echo ${CoMa[0,1]}                        
+
+
+#function loop_scripts {
+#}
 #environment_variables
-init_scripts
+#init_scripts
+#loop_scripts
+
+
+
 
