@@ -1,0 +1,4 @@
+# commands: 
+#  - <check_script_name> <check_interval[min]> <check_script with parameters> 
+check_ssh 5 check_port.pl -p 22 -h 127.0.0.1 -c 10 -w 4
+
